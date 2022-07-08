@@ -6,13 +6,6 @@ create table users(
     password int
 );
 
--- create table moviesFilm(
---     movie_id serial not null primary key,
---     movie_name text,
---     user_id int,
---     foreign key (user_id) references users(user_id)
--- )
--- testing
 create table user_movies(
     id serial not null primary key,
     user_id int not null,
@@ -21,4 +14,4 @@ create table user_movies(
     img text,
     foreign key (user_id)references users(user_id)
 );
-insert into users (username,firstname,lastname,password) values('Nkuli','Nkululeko','Cekiso',12356);
+-- insert into users (username,firstname,lastname,password) values('Nkuli','Nkululeko','Cekiso',12356);

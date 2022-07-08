@@ -5,6 +5,12 @@ import Alpine from 'alpinejs'
 import moviesApp from './movieApi'
 Alpine.data('enterOpen', moviesApp)
 
+// import "mocha";
+// mocha.setup({ ui: "bdd" });
+
+// import test from 'tests'
+
+
 window.Alpine = Alpine
 
 Alpine.start()

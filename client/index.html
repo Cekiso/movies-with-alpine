@@ -86,7 +86,7 @@
         </div>
         <div :class="{ 'hidden': playlistOpen }">
             <div>
-                <button :class="{ 'hidden': playlistOpen }" @click="Addplaylist()">My list</button>
+                <button :class="{ 'hidden': !enterOpen }" @click="Addplaylist()">My list</button>
 
             </div>
             <div class="container">

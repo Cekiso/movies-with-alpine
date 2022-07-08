@@ -8,40 +8,48 @@ module.exports = function name(app, db) {
     });
     app.post('/api/login', async function(req, res) {
 
-        const { username, password } = req.body
-        const logedin = await db.oneOrNone("select * from users where username = $1", [username])
-        const passwordChecking = await db.oneOrNone("select password from users where username=$1", [username])
-        const findId = await db.oneOrNone("select user_id from users where username=$1", [username])
-        console.log(logedin);
-        if (logedin && passwordChecking.password == password) {
-            jwt.sign({ logedin }, 'secretkey', (err, token) => {
-                return res.json({
-                    success: true,
-                    user: {
-                        firstname: 'Nkuli',
-                        lastname: 'Cekiso',
-                        username: 'mogerl',
-                        password: 12345,
-                        userid: findId.user_id
+        try {
+            const { username, password } = req.body
+            const logedin = await db.oneOrNone("select * from users where username = $1", [username])
+            const passwordChecking = await db.oneOrNone("select password from users where username=$1", [username])
+            const findId = await db.oneOrNone("select user_id from users where username=$1", [username])
+            console.log(logedin);
+            if (logedin && passwordChecking.password == password) {
+                jwt.sign({ logedin }, 'secretkey', (err, token) => {
+                    return res.json({
+                        success: true,
+                        user: {
+                            firstname: 'Nkuli',
+                            lastname: 'Cekiso',
+                            username: 'mogerl',
+                            password: 12345,
+                            userid: findId.user_id
 
-                    },
-                    access_token: token,
+                        },
+                        access_token: token,
 
+                    })
                 })
-            })
-        } else if (logedin && passwordChecking.password != password) {
-            return res.json({
-                success: false,
-                status: "Wrong password",
-                user: null,
-                access_token: null
-            })
-        } else if (!logedin)
-            return res.json({
-                success: false,
-                user: null,
-                access_token: null
-            })
+
+
+            } else if (logedin && passwordChecking.password != password) {
+                return res.json({
+                    success: false,
+                    status: "Wrong password",
+                    user: null,
+                    access_token: null
+                })
+            } else if (!logedin)
+                return res.json({
+                    success: false,
+                    user: null,
+                    access_token: null
+                })
+        } catch (error) {
+
+        }
+
+
 
 
     })
@@ -50,9 +58,9 @@ module.exports = function name(app, db) {
             var singUp = await db.manyOrNone("select * from users where username = $1 and lastname=$2 and firstname=$3 and password=$4", [username, lastname, firstname, password])
             await db.none("insert into users(username, lastname, firstname, password) values ($1 , $2, $3, $4)", [username, lastname, firstname, password])
             res.json({
-                data: singUp
+                data: "success"
             })
-            console.log(singUp);
+
 
         })
         // movies api

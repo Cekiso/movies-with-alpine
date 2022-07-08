@@ -1,0 +1,16 @@
+language: node_js
+
+node_js:  
+  - "12"
+
+services:
+  - postgresql
+
+env:
+  - DATABASE_URL=postgresql://postgres@localhost:5432/movies;
+
+before_script:
+  - psql -c 'create database movies;' -U postgres
+  - psql -U postgres -d movies -a -f ./server/sql/movie_user.sql
+  language: node_js
+
