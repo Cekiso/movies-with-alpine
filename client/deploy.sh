@@ -19,6 +19,6 @@ git add -A
 git commit -m 'deploy'
 
 # Add your GitHub repo details here
-git push -f https://github.com/Cekiso/movie-alpine-tests.git main:gh-pages
+git push -f https://github.com/Cekiso/movies-with-alpine.git main:gh-pages
 
 cd -
