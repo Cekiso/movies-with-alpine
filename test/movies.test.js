@@ -14,10 +14,17 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-const DATABASE_URL = process.env.DATABASE_URL || 'postgres://nkully:nkully@localhost:5432/movies';
+const DATABASE_URL = process.env.DATABASE_URL;
+const config = {
+    connectionString: DATABASE_URL
+}
+if (process.env.NODE_ENV == 'production') {
+    config.ssl = {
+        rejectUnauthorized: false
+    }
+}
 const pgp = PgPromise({});
-const db = pgp(DATABASE_URL);
-
+const db = pgp(config);
 API(app, db);
 
 describe('The Movie Api', function() {
@@ -32,41 +39,28 @@ describe('The Movie Api', function() {
         // await db.none(commandText)
     });
 
-    it('should have a test method', async() => {
+    it('should be able to register a new user', async () => {
 
-        const response = await supertest(app)
-            .get('/api/test')
-            .expect(200);
+        const response = await supertest(app).post('/api/register').send({
+            username: 'mogerl',
+            lastname: 'Cekiso',
+            firstname: 'Nkuli',
+            password: 12345
+        })
+        
 
-        assert.deepStrictEqual({ name: 'joe' }, response.body);
+        assert.equal('success', response.body.data);
 
     });
-    it('should be able to add a new user', async() => {
+    it('should let user login', async () => {
 
-        const response = await supertest(app)
-            .post('/api/register')
-            .send({
+        const response = await supertest(app).post('/api/login').send({
                 username: 'mogerl',
-                lastname: 'Cekiso',
-                firstname: 'Nkuli',
-                password: 12345
+                password: 'password05',
 
             });
 
-        assert.equal("success", response.body.data);
-
-    });
-    it('should be able to login a user', async() => {
-
-        const response = await supertest(app)
-            .post('/api/login')
-            .send({
-                username: 'nkule',
-                password: 458
-
-            });
-
-        assert.equal(true, response.body.success);
+        assert.equal('success', response.body.success);
 
     });
     it('should be able to add a movie to the users playlist', async() => {

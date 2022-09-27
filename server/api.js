@@ -51,12 +51,17 @@ module.exports = function name(app, db) {
 
     })
     app.post('/api/register', async function(req, res) {
-            const { username, lastname, firstname, password } = req.body
+          
+            try {
+                  const { username, lastname, firstname, password } = req.body
             var singUp = await db.manyOrNone("select * from users where username = $1 and lastname=$2 and firstname=$3 and password=$4", [username, lastname, firstname, password])
             await db.none("insert into users(username, lastname, firstname, password) values ($1 , $2, $3, $4)", [username, lastname, firstname, password])
             res.json({
                 data: "success"
             })
+            } catch (error) {
+                
+            }
 
 
         })
