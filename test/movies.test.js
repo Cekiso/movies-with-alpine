@@ -7,7 +7,7 @@ require('dotenv').config()
 
 // const test = require('test');
 
-const API = require('../api');
+const API = require('../server/api');
 const { default: axios } = require('axios');
 const app = express();
 

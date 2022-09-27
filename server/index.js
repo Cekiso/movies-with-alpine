@@ -15,12 +15,20 @@ app.use(cors())
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(express.static('public'));
+// const config = {
+//     connectionString: process.env.DATABASE_URL || 'postgres://nkully:nkully@localhost:5432/movies',
+//     max: 30,
+//     ssl: { rejectUnauthorized: false }
+// };
+const DATABASE_URL = process.env.DATABASE_URL;
 const config = {
-    connectionString: process.env.DATABASE_URL || 'postgres://nkully:nkully@localhost:5432/movies',
-    max: 30,
-    ssl: { rejectUnauthorized: false }
+    connectionString: DATABASE_URL,
 };
-
+if (process.env.NODE_ENV == "production") {
+    config.ssl = {
+        rejectUnauthorized: false,
+    };
+}
 
 const pgp = PgPromise({});
 const db = pgp(config);
@@ -34,3 +42,9 @@ app.get('/', async function(req, res) {
 app.listen(PORT, function() {
     console.log(`App started on port ${PORT}`)
 });
+
+
+
+
+
+

@@ -1,99 +1,226 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="favicon.svg" />
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <head>
+        <meta charset="UTF-8"/>
+        <link rel="icon" type="image/svg+xml" href="favicon.svg"/>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.1/dist/css/bootstrap.min.css">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
-    <title>Vite App</title>
+        <title>Vite App</title>
 
-</head>
+    </head>
 
-<body>
-    <div id="app"></div>
-    <div x-data="enterOpen" class="enterOpen">
+    <body>
+        <div id="app"></div>
+        <div x-data="enterOpen" class="enterOpen">
 
-        <div :class="{ 'hidden': enterOpen }">
-
-
-            <h1>Sign up for an account</h1>
-            <br>
-            <strong>firstname:</strong>
-            <input type="text" name="firstname" x-model="firstname">
-            <strong>lastname:</strong>
-            <input type="text" name="lastname" x-model="lastname">
-            <br><br>
-            <strong>username:</strong>
-            <input type="text" name="username" x-model="usenameReg" required>
-
-            <strong>password:</strong>
-            <input type="number" name="password" x-model="passwordReg" required>
-            <button @click="Register()" style="background-color: aquamarine;">signup</button>
-            <span x-text="successErr" x-show="successErr != ''" x-transition style="background-color:rgb(95, 255, 47);font-size: 20px; color:white"></span>
-
-
-        </div>
-        <div :class="{ 'hidden': enterOpen }">
-
-            <hr><br>
-
-            <h1>Login to your account</h1>
-            <br>
-            <strong>username:</strong>
-            <input type="text" x-model="username" name="username" required>
-
-            <strong>password:</strong>
-            <input type="number" name="password" x-model="password" placeholder="numbers" required>
-
-            <button @click="logIn()" style="background-color: aquamarine;">Login</button>
-            <span x-text="errorText" x-show="errorText != ''" x-transition style="font-size: 20px;"></span>
-
-        </div>
-
-
-
-
-
-        <br /><br />
-        <div :class="{ 'hidden': !enterOpen }">
-            <div class="movieSearch"><strong>Search for movie</strong>
-                <input type="text" x-model="movie_name" placeholder="Title,people,genres"> <button @click="playlist()" width="150" height="250">Search</button>
-
-            </div>
-
-            <div class="container">
-                <div class="row">
-                    <div class="col">
-                        <template x-for="movie in movies">
-                            <div class="movie">
-                                <img :src="`https://image.tmdb.org/t/p/w500${movie.poster_path}`" width="150"
-                                    height="250">
-                                <p x-text="movie.title"></p>
-                                <p x-text="movie.release_date"></p>
-
-                                <button
-                                    @click="original_title=movie.title,movie_id=movie.id,poster_img=movie.poster_path,favouriteMovie()">Add to my list</button>
+            <div class="row">
+                <div class="col-12">
+                    <div x-show="logUser" class="container">
+                        <div class="row">
+                            <div class="col-12">
+                                <h1>Login</h1>
+                                <p>Please login in your username and password</p>
                             </div>
-                          
-                        </template>
-                    </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-12">
+                                <div x-text="loginSuccessMsg" style="color:green ;"></div>
+                            </div>
+                        </div>
 
+                        <div class="row">
+                            <div class="col-6">
+                                <label class="form-label">
+                                    <b>Username</b>
+                                </label>
+                                <input type="text" class="form-control" x-model="username"/>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-6">
+                                <label class="form-label">
+                                    <b>Password</b>
+                                </label>
+                                <input type="password" class="form-control" x-model="password"/>
+                            </div>
+                        </div>
+<br>
+                        <div class="row">
+                            <div class="col-12">
+                                <button class="btn btn-primary" @click="logUser=true, logIn()">
+                                    Login
+                                </button>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <p class="col-12">
+                                Don't have an account?
+
+                                <a href="#" @click="createAcc = true, logUser = false">Create Account</a>
+                            </p>
+                        </div>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div :class="{ 'hidden': playlistOpen }">
-            <div>
-                <button :class="{ 'hidden': !enterOpen }" @click="Addplaylist()">My list</button>
+            <div class="row">
+                <div x-show="createAcc" class="container">
 
+                    <div class="col-12">
+                        <h1>Sign up</h1>
+                        <p>Please fill in this form to create an account</p>
+                    </div>
+
+                    <div class="row">
+                        <div class="col-12">
+                            <div x-text="registerSuccessMsg" class="text-success" style="color: green;"></div>
+                        </div>
+                    </div>
+
+                    <div class="col-6">
+                        <label class="form-label" for="first_name">
+                            <b>Firstname</b>
+                        </label>
+                        <input class="form-control" type="text" id="first_name" x-model="firstname" name="firstname" required/>
+                    </div>
+
+                    <div class="col-6">
+                        <label class="form-label" for="lastname">
+                            <b>Lastname</b>
+                        </label>
+                        <input class="form-control" type="text" x-model="lastname" name="lastname" id="lastname"/>
+                    </div>
+
+
+                    <div class="col-6">
+                        <label class="form-label" for="username">
+                            <b>Username</b>
+                        </label>
+                        <input type="text" x-model="usernameReg" name="username" class="velidate; form-control" id="username" required/>
+                    </div>
+
+                    <div class="col-6">
+                        <label class="form-label" for="password">
+                            <b>Password</b>
+                        </label>
+                        <input type="password" class="form-control" id="password" x-model="passwordReg" name="password" required/>
+                    </div>
+
+                    <div class="col-12">
+                        <p>
+                            By creating an account you agree to our
+                            <a href="#" style="color: dodgerblue">Terms & Privacy</a>.
+                        </p>
+                    </div>
+
+                    <div class="col-12">
+                        <button class="btn btn-primary" @click="logUser=false, createAcc=true, register()">
+                            Signup
+                        </button>
+                    </div>
+                    <div class="col-12">
+                        <p>
+                            Login here if you have registered
+
+                            <a href="#" @click="logUser= true, createAcc= false">Login</a>
+                        </p>
+                    </div>
+                </div>
             </div>
-            <div class="container">
-                <div class="row">
-                    <div class="col">
 
-                        <template x-for="movie in favPlaylists">
+
+            <div class="testing">
+                <header>
+
+                    <div x-show="nav" class="nav">
+
+                        <nav>
+                            <ul>
+                                <li class="home">
+                                    <i id="hide" class="fa fa-home" aria-hidden="true" href="index.html" style="font-size: 36px" @click="displayResults=true,displayMovies=false,favoriteMovies=false">
+                                        <b style="font-size: 17px">Home</b>
+                                    </i>
+                                </li>
+                                <li class="myList">
+                                    <i id="hide1" class="fa fa-plus" aria-hidden="true" href="index.html" style="font-size: 36px" @click="displayResults=false,displayMovies=false,favoriteMovies=true,Addplaylist()">
+                                        <b style="font-size: 17px">My List</b>
+
+                                    </i>
+                                </li>
+
+                                <li class="LogOut">
+                                    <i class="fa fa-sign-out" aria-hidden="true" style="font-size: 36px" href="index.html" @click="logUser=true,displayMovies=false,favouriteMovies=false,nav=false,displayResults=false,logOut()">
+                                        <b style="font-size: 17px">LogOut</b>
+                                    </i>
+                                </li>
+
+                            </ul>
+                        </nav>
+                    </div>
+                
+                </header>
+                <div x-show="displayResults">
+
+                    <div class="movieSearch">
+                        <strong>Search for movie</strong>
+                        <!-- <input type="text" x-model="movie_name" placeholder="Title,people,genres"> <button @click="playlist()" width="150" height="250">Search</button> -->
+                        <!-- <button  @click="Addplaylist(),displayMovies=false,favoriteMovie=true">My list</button> -->
+                        <div class="input-group col ,align-content-center">
+                            <label class="form-label" style="font-size: 20px">
+                                <b>Search:
+                                </b>
+
+                            </label>
+                            <input x-model="movie_name" type="text" placeholder="Titles,people,genres" class="form-control" aria-label="small" aria-describedby="inputGroup-sizing-sm">
+                            <button class="input-group-text" id="input-sizing" @click="playlist()">Search</button>
+                            <div class="col-12">
+                                <div x-text="noMovies" style="font-size: 30px;"></div>
+                            </div>
+                        </div>
+                        <div class="input-group-prepend" col-4></div>
+
+                    </div>
+                </div>
+
+<div x-show="displayMovies">
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <template x-for="movie in movies">
+                    <div class="movie">
+                        <img :src="`https://image.tmdb.org/t/p/w500${movie.poster_path}`" width="150" height="250" font-size="20px">
+                        <p x-text="movie.title"></p>
+                        <p x-text="movie.release_date"></p>
+
+                        <button @click="original_title=movie.title,movie_id=movie.id,poster_img=movie.poster_path,favouriteMovie()">Add to my list</button>
+
+
+                    </div>
+
+                </template>
+                <div class="col-12">
+                    <div x-text="addedList" color="green"></div>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</div>
+          
+            </div>
+
+            <div x-show="favoriteMovies">
+                <div class="col-12">
+                    <h1>My List</h1>
+                </div>
+                <!-- <button @click="Addplaylist()">My list</button> -->
+                <div class="container">
+                    <div class="row">
+                        <div class="col">
+
+                            <template x-for="movie in favPlaylists">
                                 <div class="movie">
                                     <img :src="`https://image.tmdb.org/t/p/w500${movie.img}`" width="150" height="250">
                                     <p x-text="movie.movie_title"></p>
@@ -103,25 +230,20 @@
                                     <i class="fa fa-trash-o" style="font-size:36px" @click="deleteMovie(movie)"></i>
         
                                 </div>
+
                             </template>
-                        <!-- <div>
-                            <button :class="{ 'hidden': !enterOpen }" @click="Addplaylist()">Click me</button>
-            
-                        </div> -->
+                            <!-- <div>
+                                                                                    <button :class="{ 'hidden': !enterOpen }" @click="Addplaylist()">Click me</button>
+                                                                    
+                                                                                </div> -->
+                        </div>
                     </div>
                 </div>
             </div>
+
+
         </div>
-
-
-
-
-
-
-
-
-    </div>
-    <script type="module" src="/main.js"></script>
-</body>
+        <script type="module" src="/main.js"></script>
+    </body>
 
 </html>

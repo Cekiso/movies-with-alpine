@@ -1,11 +1,8 @@
 const jwt = require("jsonwebtoken")
+// const bcrypt = require("bcrypt");
 
 module.exports = function name(app, db) {
-    app.get('/api/test', function(req, res) {
-        res.json({
-            name: 'joe'
-        });
-    });
+  
     app.post('/api/login', async function(req, res) {
 
         try {
@@ -66,13 +63,15 @@ module.exports = function name(app, db) {
         // movies api
     app.post('/api/playlist', async function(req, res) {
         const { movie_id, movie_title, img, user_id } = req.body
-        var addPlaylist = await db.none("insert into user_movies (movie_id, movie_title, img, user_id) values ($1 ,$2 ,$3, $4)", [movie_id, movie_title, img, user_id])
-
-        res.json({
-            status: "success",
-
-
-        })
+        // var addPlaylist = await db.none("insert into user_movies (movie_id, movie_title, img, user_id) values ($1 ,$2 ,$3, $4)", [movie_id, movie_title, img, user_id])
+        var checkDuplicate= await db.oneOrNone("select * from user_movies where movie_id = $1",[movie_id])
+        if(!checkDuplicate){
+            var addPlaylist = await db.none("insert into user_movies (movie_id, movie_title, img, user_id) values ($1 ,$2 ,$3, $4)", [movie_id, movie_title, img, user_id])
+            res.json({
+                status: "success",
+            })
+        }
+     
         console.log(addPlaylist);
     })
     app.get('/api/playlist/:user', async function(req, res) {
