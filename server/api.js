@@ -20,13 +20,18 @@ module.exports = function name(app, db) {
                             lastname: 'Cekiso',
                             username: 'mogerl',
                             password: 12345,
-                            userid: findId.user_id
+                            userid: findId.user_id,
 
                         },
+                        
                         access_token: token,
+                    
 
                     })
+                   
+
                 })
+                // console.log(user_id + ' yellow mellow')
 
 
             } else if (logedin && passwordChecking.password != password) {
@@ -43,9 +48,9 @@ module.exports = function name(app, db) {
                     access_token: null
                 })
         } catch (error) {
+            console.log(error);
 
         }
-
 
 
 
@@ -60,6 +65,7 @@ module.exports = function name(app, db) {
                 data: "success"
             })
             } catch (error) {
+            console.log(error);
                 
             }
 
@@ -67,6 +73,7 @@ module.exports = function name(app, db) {
         })
         // movies api
     app.post('/api/playlist', async function(req, res) {
+     try {
         const { movie_id, movie_title, img, user_id } = req.body
         // var addPlaylist = await db.none("insert into user_movies (movie_id, movie_title, img, user_id) values ($1 ,$2 ,$3, $4)", [movie_id, movie_title, img, user_id])
         var checkDuplicate= await db.oneOrNone("select * from user_movies where movie_id = $1",[movie_id])
@@ -75,24 +82,34 @@ module.exports = function name(app, db) {
             res.json({
                 status: "success",
             })
-        }
-     
+        }  
+     } catch (error) {
+        console.log(error);
+     }
         console.log(addPlaylist);
     })
+
     app.get('/api/playlist/:user', async function(req, res) {
 
-        let favMovies = []
-        const userid = Number(req.params.user)
-
-        favMovies = await db.manyOrNone("select * from user_movies where user_id =$1", [userid])
-        res.json({
-            result: favMovies
-        })
+  
+        try {
+            let favMovies = []
+            const userid = Number(req.params.user)
+    
+            favMovies = await db.manyOrNone("select * from user_movies where user_id =$1", [userid])
+            res.json({
+                result: favMovies
+            })  
+        } catch (error) {
+            console.log(error);
+        }
     })
 
     app.delete('/api/playlist/:id', async function(req, res) {
 
 
+        try {
+            
         const { id } = req.params;
         // delete the garments with the specified gender
         // const garment = []
@@ -102,6 +119,9 @@ module.exports = function name(app, db) {
             status: 'success',
             data: results
         })
+        } catch (error) {
+            console.log(error);
+        }
 
     });
 

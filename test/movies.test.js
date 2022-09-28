@@ -14,15 +14,11 @@ const app = express();
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
-const DATABASE_URL = process.env.DATABASE_URL;
 const config = {
-    connectionString: DATABASE_URL
-}
-if (process.env.NODE_ENV == 'production') {
-    config.ssl = {
-        rejectUnauthorized: false
-    }
-}
+    connectionString: process.env.DATABASE_URL || 'postgres://nkully:nkully@localhost:5432/movies',
+    max: 30,
+    ssl: { rejectUnauthorized: false }
+};
 const pgp = PgPromise({});
 const db = pgp(config);
 API(app, db);
@@ -31,8 +27,8 @@ describe('The Movie Api', function() {
 
     before(async function() {
         this.timeout(5000);
-        // await db.none(`delete from user_movies`);
-        // await db.none(`delete from users`);
+        await db.none(`delete from user_movies`);
+        await db.none(`delete from users`);
 
 
         // const commandText = fs.readFileSync('./sql/movie_user.sql', 'utf-8');
@@ -56,43 +52,58 @@ describe('The Movie Api', function() {
 
         const response = await supertest(app).post('/api/login').send({
                 username: 'mogerl',
-                password: 'password05',
+                password: 12345,
 
             });
 
-        assert.equal('success', response.body.success);
+        assert.equal(true,response.body.success);
 
     });
-    it('should be able to add a movie to the users playlist', async() => {
-
-
+    it('should be able to add a movie to the users playlist', async () => {
         const response = await supertest(app)
+        .post('/api/login')
+        .send({
+            username: 'mogerl',
+            password: 12345
+
+        });
+        // console.log(response.body.user.userid + 'hello mama');
+    const id = response.body.user.userid
+
+
+
+        const checkingPlaylist = await supertest(app)
+
             .post('/api/playlist')
             .send({
                 movie_id: 9494,
                 movie_title: "Look Who's Talking",
                 img: "/k60x5YEOox9P9vWITSHFSkLGecN.jpg",
-                user_id: 4
+                user_id: id 
             });
 
-        assert.equal("success", response.body.status);
+        assert.equal("success", checkingPlaylist.body.status);
 
     });
-    it('should be able to display with the user id', async() => {
+    it('should be able to display with the user id', async () => {
         const response = await supertest(app)
             .post('/api/login')
             .send({
-                username: 'nkule',
-                password: 458
+                username: 'mogerl',
+                password: 12345
 
             });
-        const id = response.body.userid
+        const id = response.body.user.userid
         const responseID = await supertest(app)
             .get('/api/playlist/' + id)
             .expect(200);
+        const movies=responseID.body.result
+        const movieOnly=movies.map(movie => {
+            return movie.movie_title
+        })
 
+        assert.equal(`Look Who's Talking`, movieOnly);
 
-        assert.equal(1, responseID.body.result);
 
     });
 
