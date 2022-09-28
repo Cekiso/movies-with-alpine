@@ -11,15 +11,15 @@
         "vite": "^2.9.9"
     },
     "dependencies": {
-        "@alpinejs/persist": "^3.10.2",
+        "@alpinejs/persist": "^3.10.3",
         "@bundled-es-modules/axios": "^0.27.2",
-        "alpinejs": "^3.10.2",
+        "alpinejs": "^3.10.3",
         "axios": "^0.27.2",
         "bcrypt": "^5.0.1",
         "cors": "^2.8.5",
         "express": "^4.18.1",
-        "nodemon": "^2.0.18",
-        "pg-promise": "^10.11.1",
-        "supertest": "^6.2.3"
+        "nodemon": "^2.0.20",
+        "pg-promise": "^10.12.0",
+        "supertest": "^6.2.4"
     }
 }
