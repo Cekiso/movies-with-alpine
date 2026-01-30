@@ -1,4 +1,3 @@
-const supertest = require('supertest');
 const PgPromise = require("pg-promise");
 const express = require('express');
 const assert = require('assert');
@@ -42,9 +41,3 @@ app.get('/', async function(req, res) {
 app.listen(PORT, function() {
     console.log(`App started on port ${PORT}`)
 });
-
-
-
-
-
-

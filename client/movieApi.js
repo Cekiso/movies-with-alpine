@@ -16,7 +16,7 @@ export default function moviesApp() {
         displayMovies:false,
         displayResults:false,
         favoriteMovies:false,
-        signUp:true,
+        signUp:false,
         Login:false,
         movie_name: null,
         movies: [],
@@ -48,7 +48,7 @@ export default function moviesApp() {
             this.signIn.username = this.user.username
             if (this.user === "users") {
                 this.displayMovies=false
-                this.displayResults=true
+                this.displayResults=false
                 this.nav= true
             } 
         }
@@ -65,7 +65,7 @@ export default function moviesApp() {
                                 const { userInfo } = users.data
                             
                                 var { access_token } = users.data
-                                    // console.log(access_token);
+                                    console.log(access_token);
                                 if (users.data.success == true) {
                                     this.loginSuccessMsg = 'Successfully login'
                                     this.displayMovies = false
@@ -170,6 +170,18 @@ export default function moviesApp() {
             }, 3000);
 
         },
+        filter(){
+            axios
+            .get(`https://api.themoviedb.org/3/search/movie?api_key=02d4c4c93174c2c6c4871f23e91933c6&query=${this.animation,this.comedy,this.action}`)
+            then((App)=> {
+                console.log(App.data);
+                this.animation = App.data.result
+            })
+            setTimeout(() => {
+                this.noMovies = '';
+            }, 3000);
+            
+        },
         favouriteMovie() {
 
             console.log(this.original_title);
@@ -185,11 +197,11 @@ export default function moviesApp() {
                 .post("http://localhost:4554/api/playlist", { movie_id, movie_title, img, user_id })
                 .then((App) => {
                     console.log(App.data);
-                // this.addedList='successfully added'
-//                  if(this.movies.indexOf(App.data) === -1){
-//                     this.movies.push(App.data)
-//                  }
-// console.log('am about to work' + this.movies);
+                this.addedList='successfully added'
+                if(this.movies.indexOf(App.data) === -1){
+                    this.movies.push(App.data)
+                }
+                    console.log('am about to work' + this.movies);
                 })
                 setTimeout(() => {
                     this.addedList = '';
@@ -209,6 +221,7 @@ export default function moviesApp() {
 
 
         },
+       
         //to do today 
         deleteMovie(element) {
 
