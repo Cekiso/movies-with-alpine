@@ -1,25 +1,23 @@
 {
-    "name": "server",
-    "version": "1.0.0",
-    "main": "index.js",
-    "scripts": {
-        "test": "mocha",
-        "start": "node index.js"
-    },
-    "keywords": [],
-    "author": "",
-    "license": "ISC",
-    "dependencies": {
-        "axios": "^1.13.3",
-        "bcrypt": "^6.0.0",
-        "cors": "^2.8.6",
-        "dotenv": "^16.6.1",
-        "express": "^4.22.1",
-        "jsonwebtoken": "^9.0.3",
-        "mocha": "^10.8.2",
-        "nodemon": "^3.1.11",
-        "pg": "^8.17.2",
-        "pg-promise": "^12.3.0",
-        "supertest": "^6.3.4"
-    }
+  "name": "movies-with-alpine",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "start": "node movieApi.js",
+    "dev": "nodemon movieApi.js",
+    "build": "cd client && npm install && npm run build"
+  },
+  "dependencies": {
+    "express": "^4.18.1",
+    "cors": "^2.8.5",
+    "pg-promise": "^10.12.0",
+    "bcrypt": "^5.0.1",
+    "axios": "^0.27.2"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.20"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
 }
