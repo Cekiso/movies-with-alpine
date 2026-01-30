@@ -1,23 +1,25 @@
 {
-  "name": "movies-with-alpine",
-  "version": "1.0.0",
-  "type": "module",
-  "scripts": {
-    "start": "node movieApi.js",
-    "dev": "nodemon movieApi.js",
-    "build": "cd client && npm install && npm run build"
-  },
-  "dependencies": {
-    "express": "^4.18.1",
-    "cors": "^2.8.5",
-    "pg-promise": "^10.12.0",
-    "bcrypt": "^5.0.1",
-    "axios": "^0.27.2"
-  },
-  "devDependencies": {
-    "nodemon": "^2.0.20"
-  },
-  "engines": {
-    "node": ">=18.0.0"
-  }
+    "name": "movies-with-alpine",
+    "private": true,
+    "version": "0.0.0",
+    "scripts": {
+        "dev": "vite",
+        "build": "vite build --mode production",
+        "preview": "vite preview"
+    },
+    "devDependencies": {
+        "vite": "^2.9.9"
+    },
+    "dependencies": {
+        "@alpinejs/persist": "^3.10.3",
+        "@bundled-es-modules/axios": "^0.27.2",
+        "alpinejs": "^3.10.3",
+        "axios": "^0.27.2",
+        "bcrypt": "^5.0.1",
+        "cors": "^2.8.5",
+        "express": "^4.18.1",
+        "nodemon": "^2.0.20",
+        "pg-promise": "^10.12.0",
+        "supertest": "^6.2.4"
+    }
 }
