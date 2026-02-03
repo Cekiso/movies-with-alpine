@@ -130,51 +130,85 @@
 export default function API(app, db) {
     
     // Register new user
-    app.post('/api/register', async (req, res) => {
-        const { firstname, lastname, username, password } = req.body;
-        
-        try {
-            const result = await db.one(
-                'INSERT INTO users(firstname, lastname, username, password) VALUES($1, $2, $3, $4) RETURNING user_id, username',
-                [firstname, lastname, username, password]
-            );
-            
-            res.json({ 
-                success: true, 
-                user: result 
-            });
-        } catch (error) {
-            console.error('Registration error:', error);
-            res.status(400).json({ 
-                success: false, 
-                message: 'Username already exists or registration failed' 
-            });
-        }
+   app.post('/api/register', async (req, res) => {
+    const { firstname, lastname, username, password } = req.body;
+    
+    console.log('📝 Registration attempt:', { 
+        firstname, 
+        lastname, 
+        username,
+        passwordLength: password?.length 
     });
+    
+    // Validate input
+    if (!username || !password || !firstname || !lastname) {
+        console.log('❌ Missing required fields');
+        return res.status(400).json({ 
+            success: false, 
+            message: 'All fields are required' 
+        });
+    }
+    
+    try {
+        const result = await db.one(
+            'INSERT INTO users(firstname, lastname, username, password) VALUES($1, $2, $3, $4) RETURNING user_id, username',
+            [firstname, lastname, username, password]
+        );
+        
+        console.log('✅ Registration successful:', result);
+        
+        res.json({ 
+            success: true, 
+            user: result 
+        });
+    } catch (error) {
+        console.error('❌ Registration error:', error.message);
+        console.error('Error code:', error.code);
+        console.error('Error detail:', error.detail);
+        
+        res.status(400).json({ 
+            success: false, 
+            message: error.code === '23505' ? 'Username already exists' : 'Registration failed: ' + error.message
+        });
+    }
+});
 
     // Login user
     app.post('/api/login', async (req, res) => {
-        const { username, password } = req.body;
+    const { username, password } = req.body;
+    
+    console.log('🔐 Login attempt:', { username });
+    
+    try {
+        // Use oneOrNone to handle cases better
+        const user = await db.oneOrNone(
+            'SELECT user_id as userid, username FROM users WHERE username=$1 AND password=$2',
+            [username, password]
+        );
         
-        try {
-            const user = await db.one(
-                'SELECT user_id as userid, username FROM users WHERE username=$1 AND password=$2',
-                [username, password]
-            );
-            
-            res.json({ 
-                success: true, 
-                user: user,
-                access_token: 'temp_token_' + user.userid // Replace with real JWT if needed
-            });
-        } catch (error) {
-            console.error('Login error:', error);
-            res.status(401).json({ 
+        if (!user) {
+            console.log('❌ Invalid credentials for:', username);
+            return res.status(401).json({ 
                 success: false, 
                 message: 'Invalid credentials' 
             });
         }
-    });
+        
+        console.log('✅ Login successful:', user);
+        
+        res.json({ 
+            success: true, 
+            user: user,
+            access_token: 'temp_token_' + user.userid
+        });
+    } catch (error) {
+        console.error('❌ Login error:', error.message);
+        res.status(401).json({ 
+            success: false, 
+            message: 'Invalid credentials' 
+        });
+    }
+});
 
     // Get user's playlist
     app.get('/api/playlist/:userId', async (req, res) => {

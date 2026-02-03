@@ -106,6 +106,22 @@ describe('The Movie Api', function() {
 
 
     });
+    // Add this to your api.js
+app.get('/api/test-db', async (req, res) => {
+    try {
+        const result = await db.one('SELECT NOW()');
+        res.json({ 
+            success: true, 
+            message: 'Database connected', 
+            time: result.now 
+        });
+    } catch (error) {
+        res.status(500).json({ 
+            success: false, 
+            error: error.message 
+        });
+    }
+});
 
     after(() => {
         db.$pool.end();

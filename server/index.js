@@ -26,6 +26,7 @@ const DATABASE_URL = process.env.DATABASE_URL;
 const config = {
     connectionString: DATABASE_URL || 'postgres://nkully:nkully@localhost:5432/movies',
 };
+console.log('🔍 Database URL:', DATABASE_URL ? 'Using Render DB' : 'Using Local DB');
 
 if (process.env.NODE_ENV === "production") {
     config.ssl = {
@@ -49,7 +50,7 @@ app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, '../client/dist/index.html'));
 });
 
-const PORT = process.env.PORT || 4554;
+const PORT = process.env.PORT || 4545;
 
 app.listen(PORT, function() {
     console.log(` Server started on port ${PORT}`);
