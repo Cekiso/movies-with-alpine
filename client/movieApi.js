@@ -49,7 +49,7 @@ export default function moviesApp() {
             if (this.user === "users") {
                 this.displayMovies=false
                 this.displayResults=false
-                this.nav= true
+                this.nav= false
             } 
         }
     },

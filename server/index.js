@@ -1,43 +1,57 @@
-const PgPromise = require("pg-promise");
-const express = require('express');
-const assert = require('assert');
-const fs = require('fs');
-const bcrypt = require('bcrypt');
-require('dotenv').config()
-const API = require('./api');
+import pgPromise from 'pg-promise';
+import express from 'express';
+import cors from 'cors';
+import dotenv from 'dotenv';
+import path from 'path';
+import { fileURLToPath } from 'url';
+import API from './api.js';
 
-const { default: axios } = require('axios');
-const cors = require('cors')
+dotenv.config();
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const app = express();
-app.use(cors())
+
+// Middleware
+app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use(express.static('public'));
-// const config = {
-//     connectionString: process.env.DATABASE_URL || 'postgres://nkully:nkully@localhost:5432/movies',
-//     max: 30,
-//     ssl: { rejectUnauthorized: false }
-// };
+
+// Serve static files from client/dist (production build)
+app.use(express.static(path.join(__dirname, '../client/dist')));
+
+// Database configuration
 const DATABASE_URL = process.env.DATABASE_URL;
 const config = {
-    connectionString: DATABASE_URL,
+    connectionString: DATABASE_URL || 'postgres://nkully:nkully@localhost:5432/movies',
 };
-if (process.env.NODE_ENV == "production") {
+
+if (process.env.NODE_ENV === "production") {
     config.ssl = {
         rejectUnauthorized: false,
     };
 }
 
-const pgp = PgPromise({});
+const pgp = pgPromise({});
 const db = pgp(config);
-// const db = pgp(DATABASE_URL);
+
+// Initialize API routes
 API(app, db);
-const PORT = process.env.PORT || 4554;
-// API routes to be added here
-app.get('/', async function(req, res) {
-    console.log(req.query)
+
+// Health check route
+app.get('/api/health', async function(req, res) {
+    res.json({ status: 'ok', message: 'Server is running' });
 });
+
+// Serve index.html for all other routes (SPA support)
+app.get('*', (req, res) => {
+    res.sendFile(path.join(__dirname, '../client/dist/index.html'));
+});
+
+const PORT = process.env.PORT || 4554;
+
 app.listen(PORT, function() {
-    console.log(`App started on port ${PORT}`)
+    console.log(` Server started on port ${PORT}`);
+    console.log(`Database connected: ${DATABASE_URL ? 'Remote' : 'Local'}`);
 });
