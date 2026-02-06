@@ -8,6 +8,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <title>CineVerse - Your Movie Universe</title>
+     <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 
 
 </head>
@@ -256,7 +257,12 @@
         <div x-show="addedList" class="success-toast" x-text="addedList"></div>
 
 
-        <script type="module" src="/main.js"></script>
+        <!-- <script type="module" src="/main.js"></script> -->
+         <!-- <script type="module" src="/src/main.js"></script> -->
+         <script type="module">
+        import moviesApp from './moviesApp.js';
+        window.moviesApp = moviesApp;
+    </script>
 </div>
 </div>
 </body>
